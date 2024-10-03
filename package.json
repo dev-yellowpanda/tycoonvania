@@ -1,0 +1,60 @@
+{
+    "name": "Test React + Phaser + Dusk",
+    "description": "Template to be used to prove that React + Phaser + Dusk is possible",
+    "version": "1.0.2",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/phaserjs/template-react-ts.git"
+    },
+    "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+    "license": "MIT",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "bugs": {
+        "url": "https://github.com/phaserjs/template-react-ts/issues"
+    },
+    "homepage": "https://github.com/phaserjs/template-react-ts#readme",
+    "keywords": [
+        "phaser",
+        "phaser3",
+        "react",
+        "vite",
+        "typescript"
+    ],
+    "scripts": {
+        "dev": "vite --host",
+        "build": "npm run lint && tsc && vite build --config vite/config.prod.mjs",
+        "upload": "npm run build && npx dusk-cli@latest upload",
+        "lint": "eslint src --ext ts,tsx",
+        "typecheck": "tsc --noEmit",
+        "checklint": "eslint --print-config file.js",
+        "viteforce": "vite --force"
+    },
+    "dependencies": {
+        "dusk-games-sdk": "^4.19.17",
+        "lodash": "^4.17.21",
+        "nipplejs": "^0.10.2",
+        "phaser": "^3.80.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "vite-plugin-static-copy": "^1.0.5"
+    },
+    "devDependencies": {
+        "@types/node": "^22.5.0",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0",
+        "@typescript-eslint/eslint-plugin": "^7.13.1",
+        "@typescript-eslint/parser": "^7.13.1",
+        "@vitejs/plugin-react": "^4.3.1",
+        "eslint": "^8.57.0",
+        "eslint-plugin-dusk": "^1.0.1",
+        "eslint-plugin-react": "^7.34.1",
+        "eslint-plugin-react-hooks": "^4.6.2",
+        "eslint-plugin-react-refresh": "^0.4.7",
+        "terser": "^5.28.1",
+        "typescript": "^5.2.2",
+        "vite": "^5.3.1",
+        "vite-plugin-dusk": "^1.0.0",
+        "vite-plugin-qrcode": "^0.2.2"
+    }
+}

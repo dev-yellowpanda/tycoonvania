@@ -1,0 +1,25 @@
+// vite.config.ts
+import react from "file:///C:/Users/Usuario/wkspaces/TycoonVania/node_modules/@vitejs/plugin-react/dist/index.mjs";
+import path from "node:path";
+import { defineConfig } from "file:///C:/Users/Usuario/wkspaces/TycoonVania/node_modules/vite/dist/node/index.js";
+import { qrcode } from "file:///C:/Users/Usuario/wkspaces/TycoonVania/node_modules/vite-plugin-qrcode/dist/index.js";
+import dusk from "file:///C:/Users/Usuario/wkspaces/TycoonVania/node_modules/vite-plugin-dusk/dist/index.js";
+var vite_config_default = defineConfig({
+  base: "",
+  // Makes paths relative
+  plugins: [
+    qrcode(),
+    // only applies in dev mode
+    react(),
+    dusk({
+      logicPath: path.resolve("./src/logic.ts"),
+      minifyLogic: false,
+      // This flag can be used if your logic reaches the allowed limit. However, it will make it significantly more difficult to detect validation issues
+      ignoredDependencies: ["ts-matrix"]
+    })
+  ]
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCJDOlxcXFxVc2Vyc1xcXFxVc3VhcmlvXFxcXHdrc3BhY2VzXFxcXFR5Y29vblZhbmlhXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ZpbGVuYW1lID0gXCJDOlxcXFxVc2Vyc1xcXFxVc3VhcmlvXFxcXHdrc3BhY2VzXFxcXFR5Y29vblZhbmlhXFxcXHZpdGUuY29uZmlnLnRzXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ltcG9ydF9tZXRhX3VybCA9IFwiZmlsZTovLy9DOi9Vc2Vycy9Vc3VhcmlvL3drc3BhY2VzL1R5Y29vblZhbmlhL3ZpdGUuY29uZmlnLnRzXCI7aW1wb3J0IHJlYWN0IGZyb20gXCJAdml0ZWpzL3BsdWdpbi1yZWFjdFwiXHJcbmltcG9ydCBwYXRoIGZyb20gXCJub2RlOnBhdGhcIlxyXG5pbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tIFwidml0ZVwiXHJcbmltcG9ydCB7IHFyY29kZSB9IGZyb20gXCJ2aXRlLXBsdWdpbi1xcmNvZGVcIlxyXG5pbXBvcnQgZHVzayBmcm9tIFwidml0ZS1wbHVnaW4tZHVza1wiXHJcblxyXG4vLyBodHRwczovL3ZpdGVqcy5kZXYvY29uZmlnL1xyXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xyXG4gIGJhc2U6IFwiXCIsIC8vIE1ha2VzIHBhdGhzIHJlbGF0aXZlXHJcbiAgcGx1Z2luczogW1xyXG4gICAgcXJjb2RlKCksIC8vIG9ubHkgYXBwbGllcyBpbiBkZXYgbW9kZVxyXG4gICAgcmVhY3QoKSxcclxuICAgIGR1c2soe1xyXG4gICAgICBsb2dpY1BhdGg6IHBhdGgucmVzb2x2ZShcIi4vc3JjL2xvZ2ljLnRzXCIpLFxyXG4gICAgICBtaW5pZnlMb2dpYzogZmFsc2UsIC8vIFRoaXMgZmxhZyBjYW4gYmUgdXNlZCBpZiB5b3VyIGxvZ2ljIHJlYWNoZXMgdGhlIGFsbG93ZWQgbGltaXQuIEhvd2V2ZXIsIGl0IHdpbGwgbWFrZSBpdCBzaWduaWZpY2FudGx5IG1vcmUgZGlmZmljdWx0IHRvIGRldGVjdCB2YWxpZGF0aW9uIGlzc3Vlc1xyXG4gICAgICBpZ25vcmVkRGVwZW5kZW5jaWVzOiBbJ3RzLW1hdHJpeCddLFxyXG4gICAgfSksXHJcbiAgXSxcclxufSlcclxuIl0sCiAgIm1hcHBpbmdzIjogIjtBQUEyUyxPQUFPLFdBQVc7QUFDN1QsT0FBTyxVQUFVO0FBQ2pCLFNBQVMsb0JBQW9CO0FBQzdCLFNBQVMsY0FBYztBQUN2QixPQUFPLFVBQVU7QUFHakIsSUFBTyxzQkFBUSxhQUFhO0FBQUEsRUFDMUIsTUFBTTtBQUFBO0FBQUEsRUFDTixTQUFTO0FBQUEsSUFDUCxPQUFPO0FBQUE7QUFBQSxJQUNQLE1BQU07QUFBQSxJQUNOLEtBQUs7QUFBQSxNQUNILFdBQVcsS0FBSyxRQUFRLGdCQUFnQjtBQUFBLE1BQ3hDLGFBQWE7QUFBQTtBQUFBLE1BQ2IscUJBQXFCLENBQUMsV0FBVztBQUFBLElBQ25DLENBQUM7QUFBQSxFQUNIO0FBQ0YsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K
