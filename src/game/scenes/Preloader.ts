@@ -38,6 +38,8 @@ export class Preloader extends Scene
         this.load.image('villager', 'Villager.png');
         this.load.image("Purchase1", 'BuyButon1tile.png');
 
+        this.load.image("playButton", 'playButton.png');
+
         this.load.image("BloodIcon", "icon_blood.png");
         this.load.image("ClockIcon", "icon_clock.png");
         this.load.image("LockIcon", "icon_locker.png");

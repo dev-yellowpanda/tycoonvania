@@ -7,14 +7,15 @@ import { MapScale } from '../../logic';
 export class Main extends Scene {
 
     backgroundAudio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
-    props: GameBaseProps
+    props: GameBaseProps;
+    firstLoad: boolean = true;
 
     constructor() {
         super('MainMenu');
     }
 
     create() {
-        
+
         this.sound.pauseOnBlur = false;
 
         this.game.events.on(Phaser.Core.Events.BLUR, () => {
@@ -22,7 +23,7 @@ export class Main extends Scene {
         });
 
         document.addEventListener('visibilitychange', () => {
-            if(!document.hidden) return;
+            if (!document.hidden) return;
             this.handleLoseFocus();
         });
 
@@ -30,14 +31,16 @@ export class Main extends Scene {
         this.backgroundAudio.setVolume(0.3);
         this.backgroundAudio.setLoop(true);
 
-        if(!this.sound.locked){
-            this.backgroundAudio.play();
-        }
-        else{
-            this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-                this.backgroundAudio.play();
-            });
-        }
+        // if(!this.sound.locked){
+        //     this.backgroundAudio.play();
+        // }
+        // else{
+        //     this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        //         this.backgroundAudio.play();
+        //     });
+        // }
+
+        this.firstLoad = true;
 
         const map = this.make.tilemap({ key: 'Map' });
         const grass = map.addTilesetImage('TX Tileset Grass', 'TX Tileset Grass');
@@ -59,39 +62,90 @@ export class Main extends Scene {
         wallToppersLayer?.setScale(MapScale, MapScale);
 
         this.scene.launch("HUD");
-        
+
         EventBus.emit('current-scene-ready', this);
+
+        this.handleLoseFocus()
     }
 
-    handleLoseFocus(){
-        if(this.scene.isActive("Pause")) return;
+    handleLoseFocus() {
+        if (this.scene.isActive("Pause")) return;
 
         console.log("handleLoseFocus(), pausing all audios playing");
-        
+
         const paused: Phaser.Sound.BaseSound[] = this.sound.getAllPlaying();
         paused.forEach(sound => {
             sound.pause();
         });
 
-        this.scene.pause("MainMenu")
+        this.backgroundAudio.pause();
+
+        EventBus.emit('mute-audio');
+
+        // this.scene.pause("MainMenu")
         const lastInputBlock = this.props ? this.props.blockClientInputs : false;
-        if(this.props) this.props.setBlockClientInputs(true);
+        if (this.props) this.props.setBlockClientInputs(true);
         this.scene.launch("Pause", {
+            checkFirstLoad: () => {
+                if (this.firstLoad)
+                    return true;
+                else
+                    return false;
+            },
             onResume: () => {
                 console.log("Resuming from Pause");
                 this.scene.stop("Pause");
                 this.scene.resume("MainMenu");
-                this.props.setBlockClientInputs(lastInputBlock);
+                if (this.props) this.props.setBlockClientInputs(lastInputBlock);
+                this.backgroundAudio.play();
                 paused.forEach(sound => {
                     sound.resume();
                 });
+
+                this.firstLoad = false;
+
+                EventBus.emit('unmute-audio');
             }
         })
 
     }
 
+    // handleStartLevel(){
+    //     if(this.scene.isActive("Pause")) return;
+
+    //     console.log("handleLoseFocus(), pausing all audios playing");
+
+    //     const paused: Phaser.Sound.BaseSound[] = this.sound.getAllPlaying();
+    //     paused.forEach(sound => {
+    //         sound.pause();
+    //     });
+
+    //     this.backgroundAudio.pause();
+
+    //     EventBus.emit('mute-audio', this);
+
+    //     // this.scene.pause("MainMenu")handleStartLevel
+    //     const lastInputBlock = this.props ? this.props.blockClientInputs : false;
+    //     if(this.props) this.props.setBlockClientInputs(true);
+    //     this.scene.launch("Pause", {
+    //         onResume: () => {
+    //             console.log("Resuming from Pause");
+    //             this.scene.stop("Pause");
+    //             this.scene.resume("MainMenu");
+    //             if(this.props) this.props.setBlockClientInputs(lastInputBlock);
+    //             this.backgroundAudio.play();
+    //             paused.forEach(sound => {
+    //                 sound.resume();
+    //             });
+
+    //             EventBus.emit('unmute-audio', this);
+    //         }
+    //     })
+
+    // }
+
     update(): void {
-        
+
         EventBus.on('scene-game-props', (props: GameBaseProps) => {
             this.props = props;
         });

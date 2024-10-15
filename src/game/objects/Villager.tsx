@@ -1,4 +1,3 @@
-
 import { GameState, MapScale, VillagerBloodStorage, VillagerCooldown, VillagerDrainTime } from "../../logic";
 import { VectorHelp } from "../../VectorHelp";
 import { AudioPlayerMethods } from "./AudioPlayer";
@@ -30,7 +29,7 @@ export type VillagerData = {
     cooldownIcon: Phaser.GameObjects.Sprite | undefined,
     cooldownLabel: Phaser.GameObjects.Text | undefined,
     spriteFX: Phaser.FX.ColorMatrix | undefined,
-    particles: { [id: number] : Phaser.GameObjects.Particles.ParticleEmitter | undefined },
+    particles: { [id: number]: Phaser.GameObjects.Particles.ParticleEmitter | undefined },
     graphics: Phaser.GameObjects.Graphics | undefined,
     getPlayerPos: (playerTeam: PlayerTeam) => number[],
     cooldownLastFrame: number,
@@ -39,10 +38,10 @@ export type VillagerData = {
     currentAnimation: string
 }
 
-export class VillagerMethods{
+export class VillagerMethods {
 
-    
-    public static construct(data: VillagerInfo, phaserScene: Phaser.Scene){
+
+    public static construct(data: VillagerInfo, phaserScene: Phaser.Scene) {
         const villager: VillagerData = {
             data: data,
             phaserScene: phaserScene,
@@ -52,7 +51,7 @@ export class VillagerMethods{
             cooldownIcon: undefined,
             cooldownLabel: undefined,
             spriteFX: undefined,
-            graphics:phaserScene.add.graphics({ lineStyle: { width: 10, color: 0xffffff }}),
+            graphics: phaserScene.add.graphics({ lineStyle: { width: 10, color: 0xffffff } }),
             particles: {},
             getPlayerPos: () => [0, 0],
             cooldownLastFrame: data.cooldown,
@@ -79,9 +78,9 @@ export class VillagerMethods{
         villager.sprite.setScale(MapScale);
         villager.sprite.setOrigin(0.5, 1);
         villager.spriteFX = villager.sprite.preFX?.addColorMatrix();
-        
+
         villager.sprite.play("Villager_Idle");
-        
+
         villager.bloodIcon = phaserScene.add.sprite(data.position[0], data.position[1], "BloodIcon");
         villager.bloodIcon.setScale(MapScale * 0.6);
         villager.bloodIcon.setOrigin(0.5, 0.5);
@@ -90,29 +89,29 @@ export class VillagerMethods{
         villager.cooldownIcon.setScale(MapScale * 0.6);
         villager.cooldownIcon.setOrigin(0.5, 0.5);
         villager.cooldownLabel = phaserScene.add.text(data.position[0], data.position[1], "100", { font: '135px Alagard' });
-        
-        for(let i = 0; i < 4; i ++){
+
+        for (let i = 0; i < 4; i++) {
             villager.particles[i] = phaserScene.add.particles(data.position[0], data.position[1], 'Blood', {
                 scale: { start: 0.70, end: 0, ease: 'sine.out' },
-                x: { min: -villager.sprite.width/2 + 20, max: villager.sprite.width/2 - 20 },
-                y: {min: -villager.sprite.height + 20, max: -20},
+                x: { min: -villager.sprite.width / 2 + 20, max: villager.sprite.width / 2 - 20 },
+                y: { min: -villager.sprite.height + 20, max: -20 },
                 moveToX: {
                     onEmit: () => {
-                        if(!villager.particles[i]) return 0;
+                        if (!villager.particles[i]) return 0;
                         return (villager.getPlayerPos(i)[0] - villager.particles[i].x) / MapScale;
                     },
                     onUpdate: () => {
-                        if(!villager.particles[i]) return 0;
+                        if (!villager.particles[i]) return 0;
                         return (villager.getPlayerPos(i)[0] - villager.particles[i].x) / MapScale;
                     }
                 },
                 moveToY: {
                     onEmit: () => {
-                        if(!villager.particles[i]) return 0;
+                        if (!villager.particles[i]) return 0;
                         return (villager.getPlayerPos(i)[1] - villager.particles[i].y) / MapScale;
                     },
                     onUpdate: () => {
-                        if(!villager.particles[i]) return 0;
+                        if (!villager.particles[i]) return 0;
                         return (villager.getPlayerPos(i)[1] - villager.particles[i].y) / MapScale;
                     }
                 },
@@ -122,15 +121,15 @@ export class VillagerMethods{
                 quantity: 1,
                 frequency: 30
             });
-    
+
             villager.particles[i].scale = MapScale;
         }
 
         return villager;
     }
 
-    public static updateSpritePosition(game: GameState, self: VillagerData){
-        if(!self) return;
+    public static updateSpritePosition(game: GameState, self: VillagerData) {
+        if (!self) return;
 
         const playerPosition: number[] = self.data.position;
 
@@ -167,15 +166,15 @@ export class VillagerMethods{
         self.cooldownLabel?.setText("" + Math.round(self.data.cooldown));
         self.cooldownLabel!.depth = self.sprite!.depth + 1;
 
-        for(const key in self.particles){
+        for (const key in self.particles) {
             self.particles[key].depth = self.sprite.depth + 1;
         }
 
         self.getPlayerPos = (playerTeam: PlayerTeam) => {
             const player = game.playersList.find(p => p.playerTeam == playerTeam);
 
-            if(player){
-                
+            if (player) {
+
                 const body = game.world.bodies[player.bodyId];
 
                 return [
@@ -187,41 +186,41 @@ export class VillagerMethods{
         }
 
 
-        for(let i = 0; i < 4; i ++){ //Loopa pelos 4 times
-            
+        for (let i = 0; i < 4; i++) { //Loopa pelos 4 times
+
             const player = game.playersList.find(p => p.playerTeam == i);
 
             self.particles[i].setPosition(self.sprite.x, self.sprite.y);
 
-            if(player){
+            if (player) {
 
-                if(self.data.playersInRange.find(p => p == player.playerId) !== undefined){
+                if (self.data.playersInRange.find(p => p == player.playerId) !== undefined) {
                     self.particles[i].emitting = self.data.bloodCount > 0;
                 }
-                else{ //Esse player não tá in range
+                else { //Esse player não tá in range
                     self.particles[i].emitting = false;
                 }
 
             }
-            else{ //Player desse time não existe no jogo
+            else { //Player desse time não existe no jogo
                 self.particles[i].emitting = false;
             }
         }
 
     }
 
-    public static update(game: GameState, self: VillagerData){
-        if(!self) return;
+    public static update(game: GameState, avoidAudio: boolean = false, self: VillagerData) {
+        if (!self) return;
 
         VillagerMethods.updateSpritePosition(game, self);
 
         self.graphics.clear();
         self.graphics.strokeCircle(self.data.position[0], self.data.position[1], 500);
- 
-        if(self.data.cooldown > 0){
+
+        if (self.data.cooldown > 0) {
             self.spriteFX?.blackWhite();
         }
-        else{
+        else {
             self.spriteFX?.reset();
         }
 
@@ -237,52 +236,56 @@ export class VillagerMethods{
 
         self.sprite.scaleX = self.data.direction * MapScale;
 
-        if(self.data.playersInRange.length > 0 && self.data.cooldown <= 0){
+        if (self.data.playersInRange.length > 0 && self.data.cooldown <= 0) {
             self.audioVolumeFade += (0.3 - self.audioVolumeFade) / 10;
         }
-        else{
+        else {
             self.audioVolumeFade += (0 - self.audioVolumeFade) / 10;
         }
 
         const magnitude = VectorHelp.magnitude;
 
-        const audioDistance = 
+        const audioDistance =
             magnitude([
                 self.sprite.x - self.phaserScene.cameras.main.scrollX,
                 self.sprite.y - self.phaserScene.cameras.main.scrollY
             ]) / 1000.0
 
 
-        const vol = Math.min(1, (1 / (audioDistance*audioDistance)));
+        const vol = Math.min(1, (1 / (audioDistance * audioDistance)));
 
         const volFinal = Math.max(Math.min(1, self.audioVolumeFade * vol * 2), 0);
 
-        if(Number.isFinite(volFinal)){
+        if (Number.isFinite(volFinal)) {
             self.bloodAudio.setVolume(volFinal);
         }
 
-        if(!self.phaserScene.sound.locked && !self.bloodAudio.isPlaying){
-            self.bloodAudio.play();
+        if (!avoidAudio) {
+            if (!self.phaserScene.sound.locked && !self.bloodAudio.isPlaying) {
+                self.bloodAudio.play();
+            }
         }
 
-        if(self.cooldownLastFrame <= 0 && self.data.cooldown > 0){
-            //CHAMAR AUDIO PRETO E BRANCO
-            AudioPlayerMethods.playSFX(self.phaserScene, 'levelUp', 0.3)
+        if (!avoidAudio) {
+            if (self.cooldownLastFrame <= 0 && self.data.cooldown > 0) {
+                //CHAMAR AUDIO PRETO E BRANCO
+                AudioPlayerMethods.playSFX(self.phaserScene, 'levelUp', 0.3)
+            }
         }
 
         self.cooldownLastFrame = self.data.cooldown
     }
 
-    public static serverUpdate(game: GameState, villager: VillagerInfo){
+    public static serverUpdate(game: GameState, villager: VillagerInfo) {
 
         // let canMove: boolean = true;
         // villager.moving = true;
 
         villager.playersInRange.forEach(playerId => {
             const player: PlayerInfo | undefined = game.playersList.find(player => player.playerId == playerId);
-            if(player){
-                if(villager.bloodCount > 0){
-                    const bloodDrop = 1/30 * VillagerBloodStorage / VillagerDrainTime;
+            if (player) {
+                if (villager.bloodCount > 0) {
+                    const bloodDrop = 1 / 30 * VillagerBloodStorage / VillagerDrainTime;
                     villager.bloodCount -= bloodDrop;
                     player.bloodCount += bloodDrop;
                     villager.moving = false;
@@ -290,15 +293,15 @@ export class VillagerMethods{
             }
         });
 
-        if(villager.playersInRange.length === 0){
+        if (villager.playersInRange.length === 0) {
             villager.moving = true;
         }
 
-        if(villager.bloodCount <= 0){
-            if(villager.cooldown < VillagerCooldown){
-                villager.cooldown += 1/30;
+        if (villager.bloodCount <= 0) {
+            if (villager.cooldown < VillagerCooldown) {
+                villager.cooldown += 1 / 30;
 
-                if(villager.cooldown >= VillagerCooldown){
+                if (villager.cooldown >= VillagerCooldown) {
                     villager.bloodCount = VillagerBloodStorage;
                     villager.cooldown = 0;
                 }
@@ -311,34 +314,34 @@ export class VillagerMethods{
         villager.speed += (targetSpeed - villager.speed) / 10;
 
         //if(canMove){
-            const sub = VectorHelp.subtract;
-            const normalize = VectorHelp.normalize;
-            //const add = VectorHelp.vectorSum;
-            const ln = VectorHelp.magnitude;
-            const sc = VectorHelp.scale;
+        const sub = VectorHelp.subtract;
+        const normalize = VectorHelp.normalize;
+        //const add = VectorHelp.vectorSum;
+        const ln = VectorHelp.magnitude;
+        const sc = VectorHelp.scale;
 
-            const targetPosition: number[] = 
-                [
-                    villager.path[villager.currentPathIndex * 2] + (villager.origin[0] * 1.01), //dusk desync hack, do not change 1.01
-                    villager.path[villager.currentPathIndex * 2 + 1] + (villager.origin[1] * 1.01)
-                ] 
+        const targetPosition: number[] =
+            [
+                villager.path[villager.currentPathIndex * 2] + (villager.origin[0] * 1.01), //dusk desync hack, do not change 1.01
+                villager.path[villager.currentPathIndex * 2 + 1] + (villager.origin[1] * 1.01)
+            ]
 
-            const direction: number[] = normalize(sub(targetPosition, villager.position));
-            const scaledDir = sc(direction, 10);
+        const direction: number[] = normalize(sub(targetPosition, villager.position));
+        const scaledDir = sc(direction, 10);
 
-            if(scaledDir[0] > 0) villager.direction = 1;
-            if(scaledDir[0] < 0) villager.direction = -1;
+        if (scaledDir[0] > 0) villager.direction = 1;
+        if (scaledDir[0] < 0) villager.direction = -1;
 
-            villager.position[0] += scaledDir[0] * targetSpeed;
-            villager.position[1] += scaledDir[1] * targetSpeed;
+        villager.position[0] += scaledDir[0] * targetSpeed;
+        villager.position[1] += scaledDir[1] * targetSpeed;
 
-            const distance = ln(sub(targetPosition, villager.position)); //Calcula a distancia pra mudar pro próximo ponto do path
-            // villager.moving = true;
+        const distance = ln(sub(targetPosition, villager.position)); //Calcula a distancia pra mudar pro próximo ponto do path
+        // villager.moving = true;
 
-            if(distance < 50){
-                villager.currentPathIndex ++;
-                villager.currentPathIndex = villager.currentPathIndex % (villager.path.length / 2);
-            }
+        if (distance < 50) {
+            villager.currentPathIndex++;
+            villager.currentPathIndex = villager.currentPathIndex % (villager.path.length / 2);
+        }
 
         //}
     }

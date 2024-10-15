@@ -22,6 +22,7 @@ function App() {
   const [canStartGame, setCanStartGame] = useState<boolean>(false)
   const [gameEnded, setGameEnded] = useState<boolean>(false)
   const [blockClientInputs, setBlockClientInputs] = useState<boolean>(false)
+  const [avoidAudio, setAvoidAudio] = useState<boolean>(false)
   const [ingamePlayersList, setIngamePlayersList] = useState<PlayerData[]>([])
   const [tutorialArrow, setTutorialArrow] = useState<TutorialArrowInfo>()
   const [ingameVillagersList, setIngameVillagersList] = useState<VillagerData[]>([])
@@ -336,6 +337,8 @@ function App() {
               setTutorialArrow={setTutorialArrow}
               tutorialRunning={tutorialRunning}
               setTutorialRunning={setTutorialRunning}
+              avoidAudio={avoidAudio}
+              setAvoidAudio={setAvoidAudio}
             />
           </Fragment >
           :

@@ -17,15 +17,26 @@ export class Pause extends Scene {
             }
         })
 
-        this.input.on('pointerdown', () => {
+        const playBytton = this.add.sprite(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'playButton').setInteractive()
+        playBytton.setScale(5)
+
+        const textPaused = this.add.text(this.sys.game.canvas.width / 2, (this.sys.game.canvas.height / 2) - 300, data.checkFirstLoad() ? "Start" : "Paused", { font: '120px Alagard', align: "center" })
+        textPaused.setOrigin(0.5, 0.5);
+
+        playBytton.on('pointerdown', () => {
             data.onResume();
         });
+
+        // this.input.on('pointerdown', () => {
+        //     data.onResume();
+        // });
     }
 
     update(): void {
 
         this.graphics.clear();
         this.graphics.fillRect(0, 0, this.sys.game.canvas.width, this.sys.game.canvas.height);
+
     }
 
 }

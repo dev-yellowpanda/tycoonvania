@@ -230,14 +230,16 @@ export class PlayerMethods {
                 const purchased = self.playerInfo.purchased[i];
 
                 //CHAMAR AUDIO DE COMPRA SUMINDO
-                AudioPlayerMethods.playSFX(self.phaserScene, 'dismissPurchasePlatform', 0.3)
+                if (!game.avoidAudio)
+                    AudioPlayerMethods.playSFX(self.phaserScene, 'dismissPurchasePlatform', 0.3)
 
                 const toBeEnabled = game.ingamePurchaseSensors[purchased].info.enables;
                 const decoCount = toBeEnabled.map(id => game.ingameDecorations[id]).filter(m => m !== undefined).length;
 
                 if (decoCount > 0) {
                     //CHAMAR AUDIO DE ESTRUTURA APARECENDO
-                    AudioPlayerMethods.playSFX(self.phaserScene, 'buildingRoom', 0.3)
+                    if (!game.avoidAudio)
+                        AudioPlayerMethods.playSFX(self.phaserScene, 'buildingRoom', 0.3)
                 }
 
                 game.ingamePurchaseSensors[purchased].tweenFade.play();
@@ -262,7 +264,8 @@ export class PlayerMethods {
 
                             self.phaserScene.time.delayedCall(count * 1000 + 500, () => {
                                 padPurchased.tweenScale.play();
-                                AudioPlayerMethods.playSFX(self.phaserScene, 'buildingRoom', 0.3)
+                                if (!game.avoidAudio)
+                                    AudioPlayerMethods.playSFX(self.phaserScene, 'buildingRoom', 0.3)
                             });
                         }
                         else {
@@ -294,7 +297,8 @@ export class PlayerMethods {
             for (let i: number = 0; i < LevelUpValues.length; i++) {
                 if (self.playerInfo.rankingScore == LevelUpValues[i]) {
                     //CHAMAR AUDIO LEVELUP
-                    AudioPlayerMethods.playSFX(self.phaserScene, 'levelUp', 0.3)
+                    if (!game.avoidAudio)
+                        AudioPlayerMethods.playSFX(self.phaserScene, 'levelUp', 0.3)
                     break;
                 }
             }

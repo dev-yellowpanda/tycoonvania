@@ -12,9 +12,11 @@ interface IProps
 {
     currentActiveScene?: (scene_instance: Phaser.Scene) => void
     onPhaserUpdate?: () => void
+    setBlockInputs?: (_bool: boolean) => void
+    setAvoidAudio?: (_bool: boolean) => void
 }
 
-export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ currentActiveScene, onPhaserUpdate }, ref)
+export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ currentActiveScene, onPhaserUpdate, setBlockInputs, setAvoidAudio }, ref)
 {
     const game = useRef<Phaser.Game | null>(null!);
 
@@ -65,8 +67,18 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
             {
                 ref.current = { game: game.current, scene: scene_instance };
             }
-            
+
+            setBlockInputs(true)
+            setAvoidAudio(true)
         });
+
+        EventBus.on('mute-audio', ()=> {
+            setAvoidAudio(true)
+        })
+
+        EventBus.on('unmute-audio', ()=> {
+            setAvoidAudio(false)
+        })
 
         EventBus.on('update-phaser-method', () =>
             {
@@ -79,6 +91,8 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
         return () =>
         {
             EventBus.removeListener('current-scene-ready');
+            EventBus.removeListener('mute-audio');
+            EventBus.removeListener('unmute-audio');
             EventBus.removeListener('update-phaser-method');
         }
     }, [currentActiveScene, ref]);

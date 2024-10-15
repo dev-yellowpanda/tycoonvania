@@ -53,6 +53,8 @@ export type GameBaseProps = {
 
     tutorialRunning: boolean
     setTutorialRunning: (_boolean: boolean) => void
+    avoidAudio: boolean
+    setAvoidAudio: (_bool: boolean) => void
 }
 
 export function GameBase(props: GameBaseProps) {
@@ -70,7 +72,10 @@ export function GameBase(props: GameBaseProps) {
         gameEnded,
         tutorialArrow,
         setTutorialArrow,
-        tutorialRunning
+        tutorialRunning,
+        setBlockClientInputs,
+        avoidAudio,
+        setAvoidAudio
     } = props;
 
     const [playerListInitialized, setPlayerListInitialized] = useState<boolean>(false);
@@ -103,9 +108,9 @@ export function GameBase(props: GameBaseProps) {
             const specificEl = ingamePlayersList.find((el) => el.playerInfo.playerId === game.playersList[i].playerId)
             PlayerMethods.update(specificEl, props);
 
-            if(yourPlayerId && specificEl){
-                if(yourPlayerId === specificEl.playerInfo.playerId){
-                    if(tutorialRunning && tutorialArrow){
+            if (yourPlayerId && specificEl) {
+                if (yourPlayerId === specificEl.playerInfo.playerId) {
+                    if (tutorialRunning && tutorialArrow) {
                         if (tutorialArrow.internalTutorialStep === 0 && specificEl.playerInfo.bloodCount >= 50) {
                             TutorialArrowMethods.NextStep(tutorialArrow, 1, props);
                         }
@@ -118,7 +123,7 @@ export function GameBase(props: GameBaseProps) {
         // time = window.performance.now();
 
         for (let i = 0; i < game.villagersList.length; i++) {
-            VillagerMethods.update(game, ingameVillagersList[i]);
+            VillagerMethods.update(game, avoidAudio, ingameVillagersList[i]);
         }
 
         TutorialArrowMethods.update(tutorialArrow, props)
@@ -345,7 +350,7 @@ export function GameBase(props: GameBaseProps) {
 
     return (
         <div id="game-box">
-            <PhaserGame ref={phaserRef} currentActiveScene={currentScene} onPhaserUpdate={onPhaserUpdate} />
+            <PhaserGame ref={phaserRef} currentActiveScene={currentScene} onPhaserUpdate={onPhaserUpdate} setBlockInputs={setBlockClientInputs} setAvoidAudio={setAvoidAudio} />
         </div>
     )
 }
